@@ -1,6 +1,7 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useContext } from 'react';
 
 import classes from './AuthForm.module.css';
+import AuthContext from '../../store/auth-context';
 
 const AuthForm = () => {
   const emailInputRef = useRef();
@@ -8,6 +9,7 @@ const AuthForm = () => {
 
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const authContext = useContext(AuthContext);
 
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
@@ -23,7 +25,7 @@ const AuthForm = () => {
     setIsLoading(true);
     let url;
     if (isLogin) {
-      url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key==AIzaSyBMxnWvrztmyZmfs7Y0A2jaGnMTgb_CgzQ';
+      url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBMxnWvrztmyZmfs7Y0A2jaGnMTgb_CgzQ';
     } else {
       url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBMxnWvrztmyZmfs7Y0A2jaGnMTgb_CgzQ'
     }
@@ -57,6 +59,7 @@ const AuthForm = () => {
     })
       .then((data) => {
         console.log(data);
+        authContext.login(data.idToken)
       })
       .catch((err) => {
         alert(err.message);
